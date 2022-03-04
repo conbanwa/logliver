@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>LiveServer Test</title>
+</head>
+
+<body>
+  <h1>Listening <i id="path"></i></h1>
+  <iframe src="" id="frame" width="800" height="800"></iframe>
+  <script type="text/javascript">
+    let path = "./log/log.txt"
+    // let path = "./README.md"
+    reload()
+    function ConnectWebSocket() {
+      if (!("WebSocket" in window)) {
+        alert("你的浏览器不支持WebSocket！")
+        return
+      }
+      let ws = new WebSocket(`ws://${window.location.host}/watcher?pathname=${window.location.pathname}`)
+      ws.onopen = function () {
+        console.log("Watcher WebSocket 连接成功 => ", ws)
+      }
+      ws.onmessage = function (evt) {
+        console.log("Watcher 发来消息 => ", evt)
+        reload()
+
+      }
+      ws.onclose = function () {
+        alert("Watcher WebSocket 连接已关闭")
+      }
+    }
+    function reload() {
+      document.getElementById("frame").setAttribute("src", path)
+      document.getElementById("path").innerHTML = path
+      // window.location.reload()
+    }
+    ConnectWebSocket()
+  </script>
+</body>
+
+</html>
